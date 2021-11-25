@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">HagoTestYMeMuevoUnMontón</string>
+    <string name="contra">Password</string>
+    <string name="contra_blanco">" You cannot leave the password blank!"</string>
+    <string name="Contra_nueva">Enter a password</string>
+    <string name="btn_entrar">Enter</string>
+</resources>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">HagoTestYMeMuevoUnMontón</string>
+    <string name="contra">Contraseña</string>
+    <string name="contra_blanco">¡No puedes dejar la contraseña en blanco!</string>
+    <string name="Contra_nueva">Introduce una contraseña</string>
+    <string name="btn_entrar">Entrar</string>
+</resources>
