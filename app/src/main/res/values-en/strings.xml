@@ -5,4 +5,9 @@
     <string name="contra_blanco">" You cannot leave the password blank!"</string>
     <string name="Contra_nueva">Enter a password</string>
     <string name="btn_entrar">Enter</string>
+    <string name="Camara">Camera</string>
+    <string name="Galeria">Galery</string>
+    <string name="HacerFoto">How do you want to take the photo?</string>
+    <string name="SinPermiso">Without permission to write there is no quality photo</string>
+    <string name="NecesitasCamara">You need to install or have a camera.</string>
 </resources>

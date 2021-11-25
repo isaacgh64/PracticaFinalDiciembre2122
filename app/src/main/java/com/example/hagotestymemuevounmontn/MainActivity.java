@@ -173,6 +173,11 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         }
+                        else{
+                            //Lanzamos a la actividad siguiente
+                            Intent intent = new Intent(MainActivity.this, MenuPrincipal.class);
+                            startActivity(intent);
+                        }
                     }
                     else {
                         //Guardamos la contraseña en nuestro sharedpreferences
@@ -185,6 +190,9 @@ public class MainActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = misDatos1.edit();
                         editor.putBoolean(ETIQUETA_CONTRA_GUARDADA, true);
                         editor.apply();
+                        //Lanzamos a la actividad siguiente
+                        Intent intent = new Intent(MainActivity.this, MenuPrincipal.class);
+                        startActivity(intent);
                     }
                 }
             }
@@ -207,13 +215,13 @@ public class MainActivity extends AppCompatActivity {
     //Dialogo que nos muestra que podemos seleccionar la cámara o la galería
     private void DialogoQueHacer(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("¿Cómo deseas hacer la foto?");
-        builder.setPositiveButton("Cámara", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.HacerFoto);
+        builder.setPositiveButton(R.string.Camara, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 hacerLaFotoConCalidad();
             }
         });
-        builder.setNegativeButton("Galería", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.Galeria, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 SeleccionarGaleria();
             }
@@ -229,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 DialogoQueHacer();
             } else {
-                Toast.makeText(this, "Sin permiso de escritura no hay foto de calidad", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.SinPermiso, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -249,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) { //Debo permitir la consulta en el android manifest
             startActivityForResult(intent, VENGO_DE_CAMARA_CON_CALIDAD);
         } else {
-            Toast.makeText(MainActivity.this, "Necesitas instalar o tener una cámara.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, R.string.NecesitasCamara, Toast.LENGTH_SHORT).show();
         }
 
     }

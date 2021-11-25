@@ -4,4 +4,9 @@
     <string name="contra_blanco">¡No puedes dejar la contraseña en blanco!</string>
     <string name="Contra_nueva">Introduce una contraseña</string>
     <string name="btn_entrar">Entrar</string>
+    <string name="HacerFoto">¿Cómo deseas hacer la foto?</string>
+    <string name="Camara">Cámara</string>
+    <string name="Galeria">Galería</string>
+    <string name="SinPermiso">Sin permiso de escritura no hay foto de calidad</string>
+    <string name="NecesitasCamara">Necesitas instalar o tener una cámara.</string>
 </resources>
