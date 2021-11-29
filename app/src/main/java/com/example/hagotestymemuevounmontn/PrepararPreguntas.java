@@ -24,6 +24,7 @@ public class PrepararPreguntas extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preparar_preguntas);
         listView=findViewById(R.id.listView);
+        manejadorBD=new ManejadorBD(this);
         MostrarDatos();
     }
 
@@ -38,10 +39,10 @@ public class PrepararPreguntas extends AppCompatActivity {
             while (cursor.moveToNext()) {
                 String fila = "";
                 fila += "ID: " + cursor.getString(0);
-                fila += " PREGUNTA: " + cursor.getString(1);
-                fila += " RESPUESTA_C: " + cursor.getString(2);
-                fila += " RESPUESTA_I: " + cursor.getString(3);
-                fila += " RESPUESTA_I: " + cursor.getString(4);
+                fila += "\n\tPREGUNTA: " + cursor.getString(1);
+                fila += "\n\t RESPUESTA_C: " + cursor.getString(2);
+                fila += "\n\t RESPUESTA_I: " + cursor.getString(3);
+                fila += "\n\t RESPUESTA_I: " + cursor.getString(4);
                 lista.add(fila);
                 preguntas.add(new Preguntas(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4)));
             }
