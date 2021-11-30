@@ -1,13 +1,20 @@
 package com.example.hagotestymemuevounmontn;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -18,6 +25,11 @@ public class PrepararPreguntas extends AppCompatActivity {
     ListView listView;
     ArrayList<Preguntas> preguntas;
     ManejadorBD manejadorBD;
+    ArrayList<Integer> ID= new ArrayList();
+    ArrayList<String> Preguntas= new ArrayList();
+    ArrayList<String> RespuestaC= new ArrayList();
+    ArrayList<String> RespuestaI1= new ArrayList();
+    ArrayList<String> RespuestaI2= new ArrayList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,22 +44,21 @@ public class PrepararPreguntas extends AppCompatActivity {
     public void MostrarDatos(){
         preguntas = new ArrayList<>();
         Cursor cursor = manejadorBD.listar();
-        ArrayAdapter<String> arrayAdapter;
-        List<String> lista = new ArrayList<>();
+
 
         if (cursor != null && cursor.getCount() > 0) {
             while (cursor.moveToNext()) {
                 String fila = "";
-                fila += "ID: " + cursor.getString(0);
-                fila += "\n\tPREGUNTA: " + cursor.getString(1);
-                fila += "\n\t RESPUESTA_C: " + cursor.getString(2);
-                fila += "\n\t RESPUESTA_I: " + cursor.getString(3);
-                fila += "\n\t RESPUESTA_I: " + cursor.getString(4);
-                lista.add(fila);
+                ID.add(cursor.getInt(0));
+                Preguntas.add(cursor.getString(1));
+                RespuestaC.add(cursor.getString(2));
+                RespuestaI1.add(cursor.getString(3));
+                RespuestaI2.add(cursor.getString(4));
                 preguntas.add(new Preguntas(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4)));
             }
-            arrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.support_simple_spinner_dropdown_item, lista);
-            listView.setAdapter(arrayAdapter);
+            AdaptadorParaPreguntas adaptadorParaPreguntas = new AdaptadorParaPreguntas(this,R.layout.adaptador,Preguntas);
+            listView.setAdapter(adaptadorParaPreguntas);
+
             /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -57,6 +68,46 @@ public class PrepararPreguntas extends AppCompatActivity {
             });*/
         } else {
             Toast.makeText(PrepararPreguntas.this, "Nada que mostrar", Toast.LENGTH_SHORT).show();
+        }
+    }
+    //Clase con la que adaptaremos nuestras preguntas para que se vean mejor
+    private class AdaptadorParaPreguntas extends ArrayAdapter<String> {
+
+        public AdaptadorParaPreguntas(@NonNull Context context, int resource, @NonNull ArrayList<String> objects) {
+            super(context, resource, objects);
+
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            return rellenarFila(position, convertView, parent);
+        }
+
+        @Override
+        public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            return rellenarFila(position, convertView, parent);
+        }
+
+        public View rellenarFila(int posicion, View view, ViewGroup padre) {
+
+            LayoutInflater inflater = getLayoutInflater();
+            View mifila = inflater.inflate(R.layout.adaptador, padre, false);
+
+            TextView pregunta = mifila.findViewById(R.id.textViewPregunta);
+            pregunta.setText(ID.get(posicion)+"."+Preguntas.get(posicion));
+
+            TextView textRespuesta1 = mifila.findViewById(R.id.textViewRespuesta1);
+            textRespuesta1.setText("-"+RespuestaC.get(posicion));
+
+            TextView textRespuesta2 = mifila.findViewById(R.id.textViewRespuesta2);
+            textRespuesta2.setText("-"+RespuestaI1.get(posicion));
+
+            TextView textRespuesta3 = mifila.findViewById(R.id.textViewRespuesta3);
+            textRespuesta3.setText("-"+RespuestaI2.get(posicion));
+
+
+            return mifila;
         }
     }
 
