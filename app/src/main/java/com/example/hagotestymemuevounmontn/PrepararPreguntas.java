@@ -32,6 +32,7 @@ public class PrepararPreguntas extends AppCompatActivity {
     ArrayList<String> RespuestaC= new ArrayList();
     ArrayList<String> RespuestaI1= new ArrayList();
     ArrayList<String> RespuestaI2= new ArrayList();
+    AdaptadorParaPreguntas adaptadorParaPreguntas;
 
     //EditText que vamos a rellenar
     EditText editTextID, editTextPregunta, editTextRespuestaC, editTextRespuestaI1, editTextRespuestaI2;
@@ -64,7 +65,7 @@ public class PrepararPreguntas extends AppCompatActivity {
                 boolean resultado = manejadorBD.insertar(editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
                 if (resultado) {
                     Toast.makeText(PrepararPreguntas.this, "Pregunta insertada Correctamente", Toast.LENGTH_SHORT).show();
-                    listView.setAdapter(null);
+                    adaptadorParaPreguntas.clear();
                     MostrarDatos();
                 } else {
                     Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
@@ -78,7 +79,7 @@ public class PrepararPreguntas extends AppCompatActivity {
             public void onClick(View v) {
                 boolean borrado = manejadorBD.borrar(editTextID.getText().toString());
                 Toast.makeText(PrepararPreguntas.this, borrado ? "Borrado Correctamente" : "No se ha borrado nada", Toast.LENGTH_SHORT).show();
-                listView.setAdapter(null);
+                adaptadorParaPreguntas.clear();
                 MostrarDatos();
             }
         });
@@ -90,7 +91,7 @@ public class PrepararPreguntas extends AppCompatActivity {
                 boolean resultado = manejadorBD.actualizar(editTextID.getText().toString().trim(),editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
                 if (resultado) {
                     Toast.makeText(PrepararPreguntas.this, "Pregunta modificada Correctamente", Toast.LENGTH_SHORT).show();
-                    listView.setAdapter(null);
+                    adaptadorParaPreguntas.clear();
                     MostrarDatos();
                 } else {
                     Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
@@ -115,7 +116,7 @@ public class PrepararPreguntas extends AppCompatActivity {
                 RespuestaI2.add(cursor.getString(4));
                 preguntas.add(new Preguntas(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4)));
             }
-            AdaptadorParaPreguntas adaptadorParaPreguntas = new AdaptadorParaPreguntas(this,R.layout.adaptador,Preguntas);
+            adaptadorParaPreguntas = new AdaptadorParaPreguntas(this,R.layout.adaptador,Preguntas);
             listView.setAdapter(adaptadorParaPreguntas);
 
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -160,13 +161,13 @@ public class PrepararPreguntas extends AppCompatActivity {
             pregunta.setText(ID.get(posicion)+"."+Preguntas.get(posicion));
 
             TextView textRespuesta1 = mifila.findViewById(R.id.textViewRespuesta1);
-            textRespuesta1.setText("-"+RespuestaC.get(posicion));
+            textRespuesta1.setText("·"+RespuestaC.get(posicion));
 
             TextView textRespuesta2 = mifila.findViewById(R.id.textViewRespuesta2);
-            textRespuesta2.setText("-"+RespuestaI1.get(posicion));
+            textRespuesta2.setText("·"+RespuestaI1.get(posicion));
 
             TextView textRespuesta3 = mifila.findViewById(R.id.textViewRespuesta3);
-            textRespuesta3.setText("-"+RespuestaI2.get(posicion));
+            textRespuesta3.setText("·"+RespuestaI2.get(posicion));
 
 
             return mifila;
