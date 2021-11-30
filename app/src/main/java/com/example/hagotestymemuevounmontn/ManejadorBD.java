@@ -44,7 +44,7 @@ public class ManejadorBD extends SQLiteOpenHelper {
         contentValues.put(COL_PREGUNTA, pregunta);
         contentValues.put(COL_RESPUESTAC, respuestaC);
         contentValues.put(COL_RESPUESTAI1, respuestaI1);
-        contentValues.put(COL_RESPUESTAI1, respuestaI1);
+        contentValues.put(COL_RESPUESTAI2, respuestaI2);
 
         long resultado = db.insert(TABLE_NAME,null, contentValues);
         db.close();
@@ -71,7 +71,7 @@ public class ManejadorBD extends SQLiteOpenHelper {
         contentValues.put(COL_PREGUNTA, pregunta);
         contentValues.put(COL_RESPUESTAC, respuestaC);
         contentValues.put(COL_RESPUESTAI1, respuestaI1);
-        contentValues.put(COL_RESPUESTAI1, respuestaI1);
+        contentValues.put(COL_RESPUESTAI2, respuestaI2);
         long resultado = sqLiteDatabase.update(TABLE_NAME, contentValues, COL_ID+"=?", new String[]{id});
 
         sqLiteDatabase.close();

@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,13 +33,70 @@ public class PrepararPreguntas extends AppCompatActivity {
     ArrayList<String> RespuestaI1= new ArrayList();
     ArrayList<String> RespuestaI2= new ArrayList();
 
+    //EditText que vamos a rellenar
+    EditText editTextID, editTextPregunta, editTextRespuestaC, editTextRespuestaI1, editTextRespuestaI2;
+
+    //Botones que vamos a usar
+    Button buttonInsertar, buttonModificar, buttonBorrar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preparar_preguntas);
         listView=findViewById(R.id.listView);
+        //Los editText buscados
+        editTextID=findViewById(R.id.editTextID);
+        editTextPregunta=findViewById(R.id.editTextPregunta);
+        editTextRespuestaC=findViewById(R.id.editTextRespuestaC);
+        editTextRespuestaI1=findViewById(R.id.editTextRespuestaI1);
+        editTextRespuestaI2=findViewById(R.id.editTextRespuestaI2);
+        //Buscamos los botones
+        buttonInsertar=findViewById(R.id.buttonInsertar);
+        buttonModificar=findViewById(R.id.buttonModificar);
+        buttonBorrar=findViewById(R.id.buttonBorrar);
         manejadorBD=new ManejadorBD(this);
         MostrarDatos();
+
+        //Boton que nos inserta datos nuevos dentro de la base de Datos
+        buttonInsertar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean resultado = manejadorBD.insertar(editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
+                if (resultado) {
+                    Toast.makeText(PrepararPreguntas.this, "Pregunta insertada Correctamente", Toast.LENGTH_SHORT).show();
+                    listView.setAdapter(null);
+                    MostrarDatos();
+                } else {
+                    Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //Botón que nos borra una pregunta
+        buttonBorrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean borrado = manejadorBD.borrar(editTextID.getText().toString());
+                Toast.makeText(PrepararPreguntas.this, borrado ? "Borrado Correctamente" : "No se ha borrado nada", Toast.LENGTH_SHORT).show();
+                listView.setAdapter(null);
+                MostrarDatos();
+            }
+        });
+
+        //Botón que nos modifica los datos
+        buttonModificar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean resultado = manejadorBD.actualizar(editTextID.getText().toString().trim(),editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
+                if (resultado) {
+                    Toast.makeText(PrepararPreguntas.this, "Pregunta modificada Correctamente", Toast.LENGTH_SHORT).show();
+                    listView.setAdapter(null);
+                    MostrarDatos();
+                } else {
+                    Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     //Función que nos muestra en todo momento como está relleno nuestro listView
@@ -59,13 +118,16 @@ public class PrepararPreguntas extends AppCompatActivity {
             AdaptadorParaPreguntas adaptadorParaPreguntas = new AdaptadorParaPreguntas(this,R.layout.adaptador,Preguntas);
             listView.setAdapter(adaptadorParaPreguntas);
 
-            /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    editTextPregunta.setText(preguntas.get(i).getId());
-                    editTextRespuestaC.setText(preguntas.get(i).getPregunta());
+                    editTextID.setText(preguntas.get(i).getId());
+                    editTextPregunta.setText(preguntas.get(i).getPregunta());
+                    editTextRespuestaC.setText(preguntas.get(i).getRespuestaC());
+                    editTextRespuestaI1.setText(preguntas.get(i).getRespuestaI1());
+                    editTextRespuestaI2.setText(preguntas.get(i).getRespuestaI2());
                 }
-            });*/
+            });
         } else {
             Toast.makeText(PrepararPreguntas.this, "Nada que mostrar", Toast.LENGTH_SHORT).show();
         }
