@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HagoTestYMeMuevoUnMontón">
         <activity
+            android:name=".JugarPreguntas"
+            android:exported="false" />
+        <activity
             android:name=".PrepararPreguntas"
             android:exported="false" />
         <activity
