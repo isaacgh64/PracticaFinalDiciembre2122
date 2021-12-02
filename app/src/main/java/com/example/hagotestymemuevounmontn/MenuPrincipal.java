@@ -26,7 +26,7 @@ public class MenuPrincipal extends AppCompatActivity {
         buttonJugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MenuPrincipal.this,JugarPreguntas.class);
+                Intent intent = new Intent(MenuPrincipal.this,Aprender.class);
                 startActivity(intent);
             }
         });
