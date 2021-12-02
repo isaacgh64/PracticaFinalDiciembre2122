@@ -3,11 +3,14 @@ package com.example.hagotestymemuevounmontn;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +26,7 @@ public class Aprender extends AppCompatActivity {
     TextView textViewPregunta;
 
     //Spinner con el que mostraremos las respuestas
-    Spinner spinner;
+    ListView spinner;
 
     //Array de números donde iremos almacenando todos los números
     int[] numeros = new int[5];
@@ -53,32 +56,36 @@ public class Aprender extends AppCompatActivity {
         textViewPregunta.setText((posicionP+1)+"."+preguntas.get(numeros[posicionP]).getPregunta());
         respuestas[posicionR]=GenerarRandomRespuestas();
         if(respuestas[posicionR]==1){
-            respuestas1=new String[]{"Selecciona Respuesta",preguntas.get(numeros[posicionP]).getRespuestaC(),preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaI2()};
+            respuestas1=new String[]{preguntas.get(numeros[posicionP]).getRespuestaC(),preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaI2()};
         }
-        else if(respuestas[posicionR]==1){
-            respuestas1=new String[]{"Selecciona Respuesta",preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaC(),preguntas.get(numeros[posicionP]).getRespuestaI2()};
+        else if(respuestas[posicionR]==2){
+            respuestas1=new String[]{preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaC(),preguntas.get(numeros[posicionP]).getRespuestaI2()};
         }
         else{
-            respuestas1=new String[]{"Selecciona Respuesta",preguntas.get(numeros[posicionP]).getRespuestaI2(),preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaC()};
+            respuestas1=new String[]{preguntas.get(numeros[posicionP]).getRespuestaI2(),preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaC()};
         }
         RellenarSpinner();
+        buttonSiguiente.setEnabled(false);
 
         buttonSiguiente.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(posicionP!=5){
+                buttonSiguiente.setEnabled(false);
+                if(posicionP<4){
+                    spinner.setEnabled(true);
+                    spinner.setBackgroundColor(Color.WHITE);
                     spinner.setAdapter(null);
                     RepetirPreguntas();
                     textViewPregunta.setText((posicionP+1)+"."+preguntas.get(numeros[posicionP]).getPregunta());
                     respuestas[posicionR]=GenerarRandomRespuestas();
                     if(respuestas[posicionR]==1){
-                        respuestas1=new String[]{"Selecciona Respuesta",preguntas.get(numeros[posicionP]).getRespuestaC(),preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaI2()};
+                        respuestas1=new String[]{preguntas.get(numeros[posicionP]).getRespuestaC(),preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaI2()};
                     }
                     else if(respuestas[posicionR]==1){
-                        respuestas1=new String[]{"Selecciona Respuesta",preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaC(),preguntas.get(numeros[posicionP]).getRespuestaI2()};
+                        respuestas1=new String[]{preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaC(),preguntas.get(numeros[posicionP]).getRespuestaI2()};
                     }
                     else{
-                        respuestas1=new String[]{"Selecciona Respuesta",preguntas.get(numeros[posicionP]).getRespuestaI2(),preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaC()};
+                        respuestas1=new String[]{preguntas.get(numeros[posicionP]).getRespuestaI2(),preguntas.get(numeros[posicionP]).getRespuestaI1(),preguntas.get(numeros[posicionP]).getRespuestaC()};
                     }
                     RellenarSpinner();
                 }
@@ -86,6 +93,33 @@ public class Aprender extends AppCompatActivity {
 
                 }
 
+            }
+        });
+
+        //Hacemos que cuando seleccione una pregunta en el Spinner nos la coja por defecto
+        spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(spinner.getItemAtPosition(i)==preguntas.get(numeros[posicionP]).getRespuestaC()){
+                    spinner.setBackgroundColor(Color.RED);
+                    spinner.getChildAt(i).setBackgroundColor(Color.GREEN);
+                }
+                else{
+                    for(int j=0;j<spinner.getCount();j++){
+                        if(spinner.getItemAtPosition(j)==preguntas.get(numeros[posicionP]).getRespuestaC()){
+                            spinner.setBackgroundColor(Color.RED);
+                            spinner.getChildAt(j).setBackgroundColor(Color.GREEN);
+                            break;
+                        }
+                    }
+                }
+                if(posicionP<4) {
+                    buttonSiguiente.setEnabled(true);
+                }
+                else{
+                    buttonSiguiente.setEnabled(false);
+                }
+                spinner.setEnabled(false);
             }
         });
 
@@ -102,7 +136,7 @@ public class Aprender extends AppCompatActivity {
         while(true){
             Boolean repetido=false;
             int aleatorio=GenerarRandomPreguntas();
-            for(int i=0;i<numeros.length;i++){
+            for(int i=0;i<numeros.length-1;i++){
                 if(numeros[i]==aleatorio){
                     repetido=true;
                 }
