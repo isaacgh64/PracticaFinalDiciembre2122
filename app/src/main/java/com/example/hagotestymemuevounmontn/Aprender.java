@@ -1,9 +1,17 @@
 package com.example.hagotestymemuevounmontn;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +20,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class Aprender extends AppCompatActivity {
 
@@ -33,6 +45,7 @@ public class Aprender extends AppCompatActivity {
     int[] respuestas= new int[3];
     int posicionP = 0;
     int posicionR=0;
+    int preguntasAcertadas=0;
 
     //Preparamos el arraylist de clases
     ArrayList<Preguntas> preguntas = new ArrayList<>();
@@ -40,16 +53,28 @@ public class Aprender extends AppCompatActivity {
     String[] respuestas1;
     ArrayAdapter<String> adaptador;
 
+    //MediaPlayer que vamos a usar para hacer nuestro juego
+    MediaPlayer mediaPlayerCorrecto,mediaPlayerIncorrecto ;
+
+    //Static que usaremos para nuestra notificación
+    private static final String ID_CANAL = "Canal para saber las notas";
+
+    //Manejador de la Base de Datos Logros que nos permitirá meter los datos
+    ManejadorLogros manejadorLogros= new ManejadorLogros(this);
+
+    Switch switchSonido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aprender);
         buttonSiguiente=findViewById(R.id.buttonSiguiente);
-        buttonAnterior=findViewById(R.id.buttonAnterior);
         textViewPregunta=findViewById(R.id.textViewPreguntas);
         spinner=findViewById(R.id.spinner);
-
+        switchSonido=findViewById(R.id.switchSonido);
+        //Creamos los mediaplayers que vamos a usar
+        mediaPlayerCorrecto = MediaPlayer.create(this, R.raw.correcto);
+        mediaPlayerIncorrecto=MediaPlayer.create(this,R.raw.incorrecto);
         //Llamos a nuestra función de generar datos y generamos las respuestas aleatorias
         MostrarDatos();
         numeros[posicionP]=GenerarRandomPreguntas();
@@ -101,8 +126,13 @@ public class Aprender extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(spinner.getItemAtPosition(i)==preguntas.get(numeros[posicionP]).getRespuestaC()){
+
+                        mediaPlayerCorrecto.start();
+
+                    preguntasAcertadas++;
                     spinner.setBackgroundColor(Color.RED);
                     spinner.getChildAt(i).setBackgroundColor(Color.GREEN);
+
                 }
                 else{
                     for(int j=0;j<spinner.getCount();j++){
@@ -111,6 +141,10 @@ public class Aprender extends AppCompatActivity {
                             spinner.getChildAt(j).setBackgroundColor(Color.GREEN);
                             break;
                         }
+
+                            mediaPlayerIncorrecto.start();
+
+
                     }
                 }
                 if(posicionP<4) {
@@ -118,12 +152,62 @@ public class Aprender extends AppCompatActivity {
                 }
                 else{
                     buttonSiguiente.setEnabled(false);
+                    lanzarNotificacionConFoto();
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    manejadorLogros.insertar(date,Integer.toString(preguntasAcertadas));
+
                 }
                 spinner.setEnabled(false);
             }
         });
 
 
+    }
+    //Función que nos manda la Notificación para que sepamos la Nota que vamos a sacar
+    private void lanzarNotificacionConFoto() {
+        String idChannel = "Canal 4";
+        String nombreCanal = "Mi canal con fotos";
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ID_CANAL);
+
+        builder.setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentTitle("Has acerado "+preguntasAcertadas+" de 5")
+                .setContentText("Despliega para ver más");
+
+        NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
+        Bitmap bitmap;
+        if(preguntasAcertadas==5){
+             bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.diez);
+        }
+        else if(preguntasAcertadas>0){
+             bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.resto);
+        }
+        else{
+            bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.cero);
+        }
+
+        bigPictureStyle.bigPicture(bitmap);
+        bigPictureStyle.setBigContentTitle("La nota que has sacado");
+        bigPictureStyle.setSummaryText("Enhorabuena, has acertado "+preguntasAcertadas+"/5 preguntas");
+
+        builder.setStyle(bigPictureStyle);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_DEFAULT);
+
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.GREEN);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setShowBadge(true);
+            builder.setChannelId(idChannel);
+            notificationManager.createNotificationChannel(notificationChannel);
+
+        } else {
+            //Menor que oreo
+            builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+        }
+
+        notificationManager.notify(4, builder.build());
     }
     //Función que nos rellena el spinner
     public void RellenarSpinner(){

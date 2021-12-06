@@ -3,8 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/isaac/AndroidStudioProjects/Practica_Final_Diciembre/app/src/main/res/layout/activity_ajustes.xml" value="0.16" />
+        <entry key="..\:/Users/isaac/AndroidStudioProjects/Practica_Final_Diciembre/app/src/main/res/layout/activity_aprender.xml" value="0.2916666666666667" />
         <entry key="..\:/Users/isaac/AndroidStudioProjects/Practica_Final_Diciembre/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/isaac/AndroidStudioProjects/Practica_Final_Diciembre/app/src/main/res/layout/activity_menu_principal.xml" value="0.20520833333333333" />
+        <entry key="..\:/Users/isaac/AndroidStudioProjects/Practica_Final_Diciembre/app/src/main/res/layout/activity_preparar_preguntas.xml" value="0.2916666666666667" />
         <entry key="..\:/Users/isaac/AndroidStudioProjects/Practica_Final_Diciembre_buena/app/src/main/res/layout/activity_jugar_preguntas.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/isaac/AndroidStudioProjects/Practica_Final_Diciembre_buena/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/isaac/AndroidStudioProjects/Practica_Final_Diciembre_buena/app/src/main/res/layout/activity_menu_principal.xml" value="0.36666666666666664" />

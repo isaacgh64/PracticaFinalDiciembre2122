@@ -2,6 +2,7 @@ package com.example.hagotestymemuevounmontn;
 
 public class Preguntas {
     String id, pregunta, respuestaC, respuestaI, respuestaI2;
+    Boolean sonido=true;
 
     public Preguntas( String id, String pregunta,String  respuestaC, String respuestaI, String respuestaI2) {
         this.id=id;
@@ -25,6 +26,12 @@ public class Preguntas {
     }
     public String getRespuestaI2(){
         return respuestaI2;
+    }
+    public void setSonido(Boolean Sonido){
+        this.sonido=sonido;
+    }
+    public Boolean getSonido(){
+        return sonido;
     }
 
 }

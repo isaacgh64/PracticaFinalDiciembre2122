@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +36,7 @@ public class PrepararPreguntas extends AppCompatActivity {
     ArrayList<String> RespuestaI1= new ArrayList();
     ArrayList<String> RespuestaI2= new ArrayList();
     AdaptadorParaPreguntas adaptadorParaPreguntas;
+    FloatingActionButton buttonVolver;
 
     //EditText que vamos a rellenar
     EditText editTextID, editTextPregunta, editTextRespuestaC, editTextRespuestaI1, editTextRespuestaI2;
@@ -55,6 +59,7 @@ public class PrepararPreguntas extends AppCompatActivity {
         buttonInsertar=findViewById(R.id.buttonInsertar);
         buttonModificar=findViewById(R.id.buttonModificar);
         buttonBorrar=findViewById(R.id.buttonBorrar);
+        buttonVolver=findViewById(R.id.buttonVolver);
         manejadorBD=new ManejadorBD(this);
         MostrarDatos();
 
@@ -96,6 +101,15 @@ public class PrepararPreguntas extends AppCompatActivity {
                 } else {
                     Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        //Botón que nos vuelve a la actividad anterior
+        buttonVolver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PrepararPreguntas.this,MenuPrincipal.class);
+                startActivity(intent);
             }
         });
     }
