@@ -20,7 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,16 +61,14 @@ public class Aprender extends AppCompatActivity {
     //Manejador de la Base de Datos Logros que nos permitirá meter los datos
     ManejadorLogros manejadorLogros= new ManejadorLogros(this);
 
-    Switch switchSonido;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aprender);
         buttonSiguiente=findViewById(R.id.buttonSiguiente);
+        buttonAnterior=findViewById(R.id.buttonAnterior);
         textViewPregunta=findViewById(R.id.textViewPreguntas);
         spinner=findViewById(R.id.spinner);
-        switchSonido=findViewById(R.id.switchSonido);
         //Creamos los mediaplayers que vamos a usar
         mediaPlayerCorrecto = MediaPlayer.create(this, R.raw.correcto);
         mediaPlayerIncorrecto=MediaPlayer.create(this,R.raw.incorrecto);
@@ -98,6 +95,9 @@ public class Aprender extends AppCompatActivity {
                 buttonSiguiente.setEnabled(false);
                 if(posicionP<4){
                     spinner.setEnabled(true);
+
+
+
                     spinner.setBackgroundColor(Color.WHITE);
                     spinner.setAdapter(null);
                     RepetirPreguntas();
@@ -126,9 +126,7 @@ public class Aprender extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(spinner.getItemAtPosition(i)==preguntas.get(numeros[posicionP]).getRespuestaC()){
-
-                        mediaPlayerCorrecto.start();
-
+                    mediaPlayerCorrecto.start();
                     preguntasAcertadas++;
                     spinner.setBackgroundColor(Color.RED);
                     spinner.getChildAt(i).setBackgroundColor(Color.GREEN);
@@ -141,10 +139,7 @@ public class Aprender extends AppCompatActivity {
                             spinner.getChildAt(j).setBackgroundColor(Color.GREEN);
                             break;
                         }
-
-                            mediaPlayerIncorrecto.start();
-
-
+                        mediaPlayerIncorrecto.start();
                     }
                 }
                 if(posicionP<4) {

@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -20,14 +19,13 @@ public class Ajustes extends AppCompatActivity {
     ArrayList<Integer> ID= new ArrayList();
     ArrayList<String> FechaHora= new ArrayList();
     ArrayList<String> Resultado= new ArrayList();
-    Switch switchSonido;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ajustes);
         listView=findViewById(R.id.listView1);
-        switchSonido=findViewById(R.id.switchSonido);
+        MostrarDatos();
     }
     //Función que nos muestra en todo momento como está relleno nuestro listView
     public void MostrarDatos(){
