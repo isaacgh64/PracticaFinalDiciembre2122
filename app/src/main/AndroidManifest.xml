@@ -25,9 +25,6 @@
             android:name=".Aprender"
             android:exported="false" />
         <activity
-            android:name=".JugarPreguntas"
-            android:exported="false" />
-        <activity
             android:name=".PrepararPreguntas"
             android:exported="false" />
         <activity

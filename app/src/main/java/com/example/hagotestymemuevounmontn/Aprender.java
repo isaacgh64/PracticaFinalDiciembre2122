@@ -66,7 +66,6 @@ public class Aprender extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aprender);
         buttonSiguiente=findViewById(R.id.buttonSiguiente);
-        buttonAnterior=findViewById(R.id.buttonAnterior);
         textViewPregunta=findViewById(R.id.textViewPreguntas);
         spinner=findViewById(R.id.spinner);
         //Creamos los mediaplayers que vamos a usar
@@ -126,7 +125,10 @@ public class Aprender extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(spinner.getItemAtPosition(i)==preguntas.get(numeros[posicionP]).getRespuestaC()){
-                    mediaPlayerCorrecto.start();
+                    if(Sonido.SONIDO==true){
+                        mediaPlayerCorrecto.start();
+                    }
+
                     preguntasAcertadas++;
                     spinner.setBackgroundColor(Color.RED);
                     spinner.getChildAt(i).setBackgroundColor(Color.GREEN);
@@ -139,7 +141,10 @@ public class Aprender extends AppCompatActivity {
                             spinner.getChildAt(j).setBackgroundColor(Color.GREEN);
                             break;
                         }
-                        mediaPlayerIncorrecto.start();
+                        if(Sonido.SONIDO==true){
+                            mediaPlayerIncorrecto.start();
+                        }
+
                     }
                 }
                 if(posicionP<4) {

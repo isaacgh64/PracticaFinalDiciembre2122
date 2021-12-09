@@ -9,8 +9,11 @@ import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -20,6 +23,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -48,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     EditText editTextContrasena;
     Boolean primera_vez=false;
     String contrasena_guardada;
+    PantallaEncendida pantallaEncendida = new PantallaEncendida();
+    ManejadorBDatos manejadorBDatos = new ManejadorBDatos(this);
 
     //Variables estáticas para el sharedpreferences
     static final String NOMBRE_FICHERO="DATOS";
@@ -73,6 +79,12 @@ public class MainActivity extends AppCompatActivity {
         buttonEntrar=findViewById(R.id.buttonAcceder);
         imageView=findViewById(R.id.imageView);
         editTextContrasena=findViewById(R.id.editTextContrasena);
+
+        //Usamos el IntentFilter para que cada vez que se encienda la Pantalla me recoja los datos
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("android.intent.action.SCREEN_ON");
+        getBaseContext().registerReceiver(pantallaEncendida, intentFilter);
+
 
         //Doy permisos para que la cámara pueda ver el fichero que he creado
         StrictMode.VmPolicy.Builder builder= new StrictMode.VmPolicy.Builder();
@@ -274,6 +286,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == VENGO_DE_GALERIA && resultCode == RESULT_OK) {
             imagenUri = data.getData();
             imageView.setImageURI(imagenUri);
+            imageView.setRotation((float) 90.0);
+
         } else if (requestCode == VENGO_DE_CAMARA_CON_CALIDAD) {
             if(resultCode==RESULT_OK){
                 Bitmap rotacion=BitmapFactory.decodeFile(fichero.getAbsolutePath());
@@ -325,5 +339,18 @@ public class MainActivity extends AppCompatActivity {
         carpetaFotos.mkdirs();
         File imagenAltaResolucion = File.createTempFile(nombreFichero, ".jpg", carpetaFotos);
         return imagenAltaResolucion;
+    }
+    //Clase que realiza la función de saber si está la pantalla encendida o no
+    private class PantallaEncendida extends BroadcastReceiver {
+        String ETIQUETA = "ESTADO";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+
+                Log.i(ETIQUETA, "Pantalla Encendida/ Bateria= ");
+
+            }
+        }
     }
 }

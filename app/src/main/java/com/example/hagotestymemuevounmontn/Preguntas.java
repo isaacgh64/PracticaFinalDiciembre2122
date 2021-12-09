@@ -12,6 +12,10 @@ public class Preguntas {
         this.respuestaI2=respuestaI2;
     }
 
+    public Preguntas(){
+
+    }
+
     public String getId(){
         return id;
     }
@@ -26,12 +30,6 @@ public class Preguntas {
     }
     public String getRespuestaI2(){
         return respuestaI2;
-    }
-    public void setSonido(Boolean Sonido){
-        this.sonido=sonido;
-    }
-    public Boolean getSonido(){
-        return sonido;
     }
 
 }
