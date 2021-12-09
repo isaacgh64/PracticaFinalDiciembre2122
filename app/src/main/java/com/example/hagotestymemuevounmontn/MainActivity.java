@@ -21,6 +21,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.BatteryManager;
@@ -47,24 +50,32 @@ import java.util.Date;
 public class MainActivity extends AppCompatActivity {
 
     //Creamos las Variables que vamos a usar en la primera ventana
-    Button buttonEntrar,buttonFoto;
+    Button buttonEntrar, buttonFoto;
     ImageView imageView;
     EditText editTextContrasena;
-    Boolean primera_vez=false;
+    Boolean primera_vez = false;
     String contrasena_guardada;
     PantallaEncendida pantallaEncendida = new PantallaEncendida();
     ManejadorBDatos manejadorBDatos = new ManejadorBDatos(this);
 
-    //Variables estáticas para el sharedpreferences
-    static final String NOMBRE_FICHERO="DATOS";
-    static final String ETIQUETA_CONTRA="CONTRA";
-    static final String ETIQUETA_FOTO="FOTO";
-    static final String ETIQUETA_CONTRA_GUARDADA="BOOLEAN";
+    //Variables para obtener la localización
+    LocationManager locationManager;
+    LocationListener locationListener;
+    String latitud;
+    String altitud;
 
-    //Variables para usar las fotos
+    //Variables estáticas para el sharedpreferences
+    static final String NOMBRE_FICHERO = "DATOS";
+    static final String ETIQUETA_CONTRA = "CONTRA";
+    static final String ETIQUETA_FOTO = "FOTO";
+    static final String ETIQUETA_CONTRA_GUARDADA = "BOOLEAN";
+
+    //Variables para usar las fotos y los permisos
     private static final int VENGO_DE_GALERIA = 100;
     private static final int PEDI_PERMISO_ESCRITURA = 1;
     private static final int VENGO_DE_CAMARA_CON_CALIDAD = 2;
+    private static final long TIEMPO_REFRESCO = 5;
+    private static final int PERMISO_GPS = 5;
     Uri imagenUri;
 
     //Fichero para poder usar la foto
@@ -75,10 +86,36 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Asociamos cada variable con su id del layout
-        buttonFoto=findViewById(R.id.buttonFoto);
-        buttonEntrar=findViewById(R.id.buttonAcceder);
-        imageView=findViewById(R.id.imageView);
-        editTextContrasena=findViewById(R.id.editTextContrasena);
+        buttonFoto = findViewById(R.id.buttonFoto);
+        buttonEntrar = findViewById(R.id.buttonAcceder);
+        imageView = findViewById(R.id.imageView);
+        editTextContrasena = findViewById(R.id.editTextContrasena);
+
+        //Pedimos permisos para poder usar el GPS al entrar a la aplicación por primera vez
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                latitud= Double.toString(location.getLatitude());
+                altitud= Double.toString(location.getAltitude());
+                Log.i("GPS",latitud+" " +altitud);
+            }
+
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISO_GPS);
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIEMPO_REFRESCO, 0, locationListener);
+
 
         //Usamos el IntentFilter para que cada vez que se encienda la Pantalla me recoja los datos
         IntentFilter intentFilter = new IntentFilter();
@@ -252,7 +289,19 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.SinPermiso, Toast.LENGTH_SHORT).show();
             }
         }
+        if (requestCode == PERMISO_GPS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "No tienes permisos.", Toast.LENGTH_SHORT).show();
+                } else {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIEMPO_REFRESCO, 0, locationListener);
+                }
 
+            } else {
+                Toast.makeText(this, "Debes darme persmisos para continuar", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
     //Función que hace la foto con Calidad
     private void hacerLaFotoConCalidad() {
@@ -344,11 +393,11 @@ public class MainActivity extends AppCompatActivity {
     private class PantallaEncendida extends BroadcastReceiver {
         String ETIQUETA = "ESTADO";
 
+
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-
-                Log.i(ETIQUETA, "Pantalla Encendida/ Bateria= ");
+                Log.i(ETIQUETA, "Pantalla Encendida/ Bateria= /Latitud= "+latitud+" Altitud= "+altitud);
 
             }
         }
