@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     Boolean primera_vez = false;
     String contrasena_guardada;
     PantallaEncendida pantallaEncendida = new PantallaEncendida();
+
     ManejadorBDatos manejadorBDatos = new ManejadorBDatos(this);
 
     //Variables para obtener la localización
@@ -91,16 +93,15 @@ public class MainActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         editTextContrasena = findViewById(R.id.editTextContrasena);
 
-        //Pedimos permisos para poder usar el GPS al entrar a la aplicación por primera vez
+
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
-                latitud= Double.toString(location.getLatitude());
-                altitud= Double.toString(location.getAltitude());
-                Log.i("GPS",latitud+" " +altitud);
+                latitud= String.valueOf(location.getLatitude());
+                altitud=String.valueOf(location.getAltitude());
             }
-
         };
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -115,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIEMPO_REFRESCO, 0, locationListener);
+
+
 
 
         //Usamos el IntentFilter para que cada vez que se encienda la Pantalla me recoja los datos
@@ -396,8 +399,18 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+
             if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-                Log.i(ETIQUETA, "Pantalla Encendida/ Bateria= /Latitud= "+latitud+" Altitud= "+altitud);
+                IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+                Intent batteryStatus = registerReceiver(null, ifilter);
+
+                int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+                int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+
+                float bateria = (level / (float)scale)*100;
+
+                Log.i(ETIQUETA, "Pantalla Encendida/ Bateria="+bateria+" /Latitud= "+latitud+" Altitud= "+altitud);
+
 
             }
         }
