@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +20,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -28,6 +33,7 @@ import android.location.LocationManager;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -37,6 +43,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -46,7 +53,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,7 +68,9 @@ public class MainActivity extends AppCompatActivity {
     PantallaEncendida pantallaEncendida = new PantallaEncendida();
 
     ManejadorBDatos manejadorBDatos = new ManejadorBDatos(this);
+    ManejadorLogros manejadorLogros= new ManejadorLogros(this);
 
+    private static final String ID_CANAL = "El nombre de mi canal";
     //Variables para obtener la localización
     LocationManager locationManager;
     LocationListener locationListener;
@@ -100,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onLocationChanged(@NonNull Location location) {
                 latitud= String.valueOf(location.getLatitude());
-                altitud=String.valueOf(location.getAltitude());
+                altitud=String.valueOf(location.getLongitude());
             }
         };
         pedirPermisoGps();
@@ -211,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         else{
                             //Lanzamos a la actividad siguiente
+                            LanzarNotificacion();
                             Intent intent = new Intent(MainActivity.this, MenuPrincipal.class);
                             startActivity(intent);
                         }
@@ -234,7 +246,87 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    //Función que nos muestra una notificación al entrar con nuestro último resultado y con los metros que hemos recorrido desde la última vez
+    private void LanzarNotificacion(){
+        //Cogemos el último logro que tenemos registrado en nuestra tabla
+        Cursor cursor = manejadorLogros.listarUltimo();
+        float dist;
+        String logro="";
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                logro=cursor.getString(0);
+            }
 
+        }
+        String idChannel = "Canal 3";
+        String nombreCanal = "Mi canal muchas líneas";
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ID_CANAL);
+        builder.setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentTitle("Bienvenido de nuevo Chaval/a")
+                .setContentText("Pulsa para ver tus datos de la última vez");
+
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+        if(!logro.isEmpty()){
+            Cursor cursor1= manejadorBDatos.listarUltimos();
+            String[] latitud1= new String[2];
+            String[] altitud1= new String[2];
+            int i=0;
+            if (cursor1 != null && cursor1.getCount() > 0) {
+                while (cursor1.moveToNext()) {
+                    latitud1[i]=cursor1.getString(0);
+                    altitud1[i]=cursor1.getString(1);
+                    i++;
+                }
+            }
+            if(latitud1[0]!=null){
+                double lat1=Double.parseDouble(latitud1[0]);
+                double lat2=Double.parseDouble(latitud1[1]);
+
+                double lng1=Double.parseDouble(altitud1[0]);
+                double lng2=Double.parseDouble(altitud1[1]);
+
+                double earthRadius = 6371; //kilometers
+                double dLat = Math.toRadians(lat2-lat1);
+                double dLng = Math.toRadians(lng2-lng1);
+                double a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.sin(dLng/2) * Math.sin(dLng/2);
+                double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                dist = (float) (earthRadius * c);
+
+            }
+            else{
+                dist=0;
+            }
+
+
+
+
+            inboxStyle.setBigContentTitle("Aquí tienes tus últimos datos");
+            inboxStyle.addLine("Tú ult puntuación "+logro+" puntos");
+            inboxStyle.addLine("Has recorrdio "+dist+" metros desde la utl vez");
+        }
+        else{
+            inboxStyle.setBigContentTitle("No hay datos guardados en las Tablas");
+        }
+
+        builder.setStyle(inboxStyle);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.GREEN);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setShowBadge(true);
+            builder.setChannelId(idChannel);
+            notificationManager.createNotificationChannel(notificationChannel);
+
+        } else {
+            //Menor que oreo
+            builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+        }
+
+        notificationManager.notify(3, builder.build());
+    }
     //Función   que nos pide el permiso para usar el GPS
     private void pedirPermisoGps(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&

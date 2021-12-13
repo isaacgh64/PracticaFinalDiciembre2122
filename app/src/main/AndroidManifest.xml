@@ -45,13 +45,9 @@
                 android:resource="@xml/filepaths" />
         </provider>
         <receiver
-            android:name=".MyReceiver"
+            android:name=".Alarma"
             android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            </intent-filter>
-        </receiver>
+            android:exported="true"></receiver>
 
 
         <service

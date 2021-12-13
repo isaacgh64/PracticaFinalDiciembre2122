@@ -47,16 +47,20 @@ public class ManejadorBDatos extends SQLiteOpenHelper {
 
     }
 
-    public boolean borrar(String id){
+    public void borrar(){
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();
-        int borrados = sqLiteDatabase.delete(TABLE_NAME, COL_ID +"=?", new String[]{id});
+        sqLiteDatabase.execSQL("DELETE FROM "+TABLE_NAME);
         sqLiteDatabase.close();
-        return (borrados>0);
     }
 
     public Cursor listar(){
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("SELECT * FROM "+TABLE_NAME, null);
+        return cursor;
+    }
+    public Cursor listarUltimos(){
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+        Cursor cursor = sqLiteDatabase.rawQuery("SELECT "+COL_LATITUD+","+COL_ALTITUD+" FROM "+TABLE_NAME+" ORDER BY "+COL_ID+" DESC LIMIT 2", null);
         return cursor;
     }
 
