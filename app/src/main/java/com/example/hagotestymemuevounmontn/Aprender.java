@@ -153,7 +153,7 @@ public class Aprender extends AppCompatActivity {
                 else{
                     buttonSiguiente.setEnabled(false);
                     lanzarNotificacionConFoto();
-                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                    String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
                     manejadorLogros.insertar(date,Integer.toString(preguntasAcertadas));
 
                 }

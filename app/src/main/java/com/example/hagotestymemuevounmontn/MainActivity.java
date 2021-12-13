@@ -103,22 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 altitud=String.valueOf(location.getAltitude());
             }
         };
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISO_GPS);
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIEMPO_REFRESCO, 0, locationListener);
-
-
-
+        pedirPermisoGps();
 
         //Usamos el IntentFilter para que cada vez que se encienda la Pantalla me recoja los datos
         IntentFilter intentFilter = new IntentFilter();
@@ -175,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
         if(primera_vez){
             editTextContrasena.setHint(R.string.contra);
         }
-
 
         //Configuramos el botón de la foto para que al darle nos permita hacernos una foto
         buttonFoto.setOnClickListener(new View.OnClickListener() {
@@ -251,6 +235,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Función   que nos pide el permiso para usar el GPS
+    private void pedirPermisoGps(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISO_GPS);
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIEMPO_REFRESCO, 0, locationListener);
+    }
     //Función con la que le pedimos al usuario permiso para acceder a la cámara y hacerla con calidad
     private void pedirpermisoParaFoto() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
@@ -409,8 +409,10 @@ public class MainActivity extends AppCompatActivity {
 
                 float bateria = (level / (float)scale)*100;
 
-                Log.i(ETIQUETA, "Pantalla Encendida/ Bateria="+bateria+" /Latitud= "+latitud+" Altitud= "+altitud);
-
+                String fechaYHora = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date());
+                Log.i(ETIQUETA, "Pantalla Encendida/ Bateria="+bateria+" /Latitud= "+latitud+" Altitud= "+altitud+"/"+fechaYHora);
+                manejadorBDatos.insertar(fechaYHora, String.valueOf(bateria),latitud,altitud);
+                Log.i(ETIQUETA,"Datos Guardados");
 
             }
         }

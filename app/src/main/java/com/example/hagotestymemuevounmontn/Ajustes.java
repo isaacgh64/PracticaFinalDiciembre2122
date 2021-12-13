@@ -28,6 +28,12 @@ public class Ajustes extends AppCompatActivity {
         setContentView(R.layout.activity_ajustes);
         listView=findViewById(R.id.listView1);
         switchSonido=findViewById(R.id.switchSonido);
+        if(Sonido.SONIDO==true){
+            switchSonido.setChecked(true);
+        }
+        else{
+            switchSonido.setChecked(false);
+        }
         switchSonido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

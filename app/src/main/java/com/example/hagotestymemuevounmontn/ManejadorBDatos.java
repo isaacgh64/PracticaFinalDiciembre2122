@@ -13,7 +13,8 @@ public class ManejadorBDatos extends SQLiteOpenHelper {
     private static final String COL_ID = "ID";
     private static final String COL_HORAFECHA = "HORAFECHA";
     private static final String COL_BATERIA = "BATERIA";
-    private static final String COL_POSICION = "POSICION";
+    private static final String COL_LATITUD = "LATITUD";
+    private static final String COL_ALTITUD = "ALTITUD";
     private static final String TABLE_NAME = "LOGROS";
 
     public ManejadorBDatos(Context ctx){
@@ -26,16 +27,17 @@ public class ManejadorBDatos extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE "+TABLE_NAME + " ("+ COL_ID+ " INTEGER PRIMARY KEY AUTOINCREMENT,"+
-                COL_HORAFECHA + " TEXT,"+COL_BATERIA+" TEXT,"+COL_POSICION+" TEXT )");
+                COL_HORAFECHA + " TEXT,"+COL_BATERIA+" TEXT,"+COL_LATITUD+" TEXT,"+COL_ALTITUD+" TEXT )");
 
     }
 
-    public boolean insertar(String horafecha, String bateria, String posicion){
+    public boolean insertar(String horafecha, String bateria, String latitud, String altitud){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL_HORAFECHA, horafecha);
         contentValues.put(COL_BATERIA, bateria);
-        contentValues.put(COL_POSICION, posicion);
+        contentValues.put(COL_LATITUD, latitud);
+        contentValues.put(COL_ALTITUD, altitud);
 
 
 
