@@ -54,7 +54,7 @@
     <string name="de5">" de 5"</string>
     <string name="despliega">Despliega para ver más</string>
     <string name="lanota">"La nota que has sacado "</string>
-    <string name="Enhorabuena">"Enhorabuena, has acertado "</string>
+    <string name="Enhorabuena">\"Enhorabuena, has acertado \"</string>
     <string name="preguntas">/5 preguntas</string>
     <string name="DatosVacios">Datos Vacíos</string>
     <string name="SeAcabo">¡SE ACABÓ EL JUEGO!</string>
