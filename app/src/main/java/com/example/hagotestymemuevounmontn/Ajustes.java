@@ -12,6 +12,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -26,9 +30,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Ajustes extends AppCompatActivity {
+public class Ajustes extends AppCompatActivity implements SensorEventListener{
     private static final String ID_CANAL = "El nombre de mi canal";
     private static final int CODIGO_ALARMA = 777;
+    SensorManager sensorManager;
     ListView listView;
     Button buttonBorrarD, buttonActivar, buttonCompartir;
     EditText editTextminutos;
@@ -52,6 +57,8 @@ public class Ajustes extends AppCompatActivity {
         buttonCompartir=findViewById(R.id.buttonActivar);
         editTextminutos=findViewById(R.id.editTextMinutos);
 
+        sensorManager=(SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY),SensorManager.SENSOR_DELAY_NORMAL);
         if(Sonido.SONIDO==true){
             switchSonido.setChecked(true);
         }
@@ -94,6 +101,15 @@ public class Ajustes extends AppCompatActivity {
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),29000, pendingIntent);
             }
         });
+
+        //Botón que comparte los datos de nuestra base de datos logros
+        buttonCompartir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
     //Función que nos lanza una notificación cuando borramos los datos
     public void lanzarNotificacion(){
@@ -145,5 +161,21 @@ public class Ajustes extends AppCompatActivity {
         } else {
             Toast.makeText(Ajustes.this, "Nada que mostrar", Toast.LENGTH_SHORT).show();
         }
+    }
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        if(sensorEvent.sensor.getType()==Sensor.TYPE_PROXIMITY){
+            if(sensorEvent.values[0]==0){
+                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Intent intent = new Intent(getApplicationContext(), Alarma.class);
+                PendingIntent pendingIntent =  PendingIntent.getBroadcast(getApplicationContext(), CODIGO_ALARMA,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                alarmManager.cancel(pendingIntent);
+            }
+        }
+    }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }
