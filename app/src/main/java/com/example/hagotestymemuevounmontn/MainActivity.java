@@ -113,6 +113,20 @@ public class MainActivity extends AppCompatActivity {
                 latitud= String.valueOf(location.getLatitude());
                 altitud=String.valueOf(location.getLongitude());
             }
+            @Override
+            public void onProviderEnabled(@NonNull String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(@NonNull String provider) {
+
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
         };
         pedirPermisoGps();
 
@@ -263,8 +277,8 @@ public class MainActivity extends AppCompatActivity {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ID_CANAL);
         builder.setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("Bienvenido de nuevo Chaval/a")
-                .setContentText("Pulsa para ver tus datos de la última vez");
+                .setContentTitle(getString(R.string.NotifiM))
+                .setContentText(getString(R.string.NotifiM1));
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
         if(!logro.isEmpty()){
@@ -301,18 +315,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-            inboxStyle.setBigContentTitle("Aquí tienes tus últimos datos");
-            inboxStyle.addLine("Tú ult puntuación "+logro+" puntos");
-            inboxStyle.addLine("Has recorrdio "+dist+" metros desde la utl vez");
+            inboxStyle.setBigContentTitle(getString(R.string.Datos));
+            inboxStyle.addLine(getString(R.string.Resultado)+logro+getString(R.string.puntos));
+            inboxStyle.addLine(getString(R.string.Recorrido)+dist+getString(R.string.metrosult));
         }
         else{
-            inboxStyle.setBigContentTitle("No hay datos guardados en las Tablas");
+            inboxStyle.setBigContentTitle(getString(R.string.nodata));
         }
 
         builder.setStyle(inboxStyle);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.GREEN);
             notificationChannel.enableVibration(true);
@@ -324,8 +338,7 @@ public class MainActivity extends AppCompatActivity {
             //Menor que oreo
             builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
         }
-
-        notificationManager.notify(3, builder.build());
+        notificationManager.notify(1, builder.build());
     }
     //Función   que nos pide el permiso para usar el GPS
     private void pedirPermisoGps(){
@@ -388,13 +401,13 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "No tienes permisos.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.Sinper), Toast.LENGTH_SHORT).show();
                 } else {
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TIEMPO_REFRESCO, 0, locationListener);
                 }
 
             } else {
-                Toast.makeText(this, "Debes darme persmisos para continuar", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.Necesitocosas), Toast.LENGTH_SHORT).show();
             }
         }
     }

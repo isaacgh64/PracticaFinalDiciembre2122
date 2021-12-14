@@ -10,7 +10,7 @@
         android:id="@+id/buttonPreparar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Preparar"
+        android:text="@string/btn_Preparar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.117"
@@ -22,7 +22,7 @@
         android:id="@+id/buttonJugar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Jugar"
+        android:text="@string/btn_jugar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.52"
@@ -34,11 +34,21 @@
         android:id="@+id/buttonAjustes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ajustes"
+        android:text="@string/btn_Ajustes"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.764" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/buttonJugar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/juegopreguntas" />
 </androidx.constraintlayout.widget.ConstraintLayout>

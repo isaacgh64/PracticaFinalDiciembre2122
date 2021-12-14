@@ -10,6 +10,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -33,6 +34,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +47,7 @@ public class Ajustes extends AppCompatActivity implements SensorEventListener{
     ListView listView;
     Button buttonBorrarD, buttonActivar, buttonCompartir;
     EditText editTextminutos;
+    FloatingActionButton buttonVolverAtras;
 
     ManejadorLogros manejadorLogros = new ManejadorLogros(this);
     ManejadorBDatos manejadorBDatos= new ManejadorBDatos(this);
@@ -63,6 +67,8 @@ public class Ajustes extends AppCompatActivity implements SensorEventListener{
         buttonActivar=findViewById(R.id.buttonActivar);
         buttonCompartir=findViewById(R.id.buttonCompartir);
         editTextminutos=findViewById(R.id.editTextMinutos);
+
+        buttonVolverAtras=findViewById(R.id.buttonVolver1);
 
 
         if(Sonido.SONIDO==true){
@@ -110,10 +116,18 @@ public class Ajustes extends AppCompatActivity implements SensorEventListener{
                     PendingIntent pendingIntent =  PendingIntent.getBroadcast(getApplicationContext(), CODIGO_ALARMA,intent, PendingIntent.FLAG_UPDATE_CURRENT);
                     alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),minutos*60, pendingIntent);
                 }catch (NumberFormatException e){
-                    Toast.makeText(Ajustes.this, "Debes poner los minutos correctamente", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Ajustes.this, getString(R.string.minutoscorrectos), Toast.LENGTH_SHORT).show();
                 }
 
 
+            }
+        });
+        //Botón que al ser pulsado nos devuelve a la actividad anterior
+        buttonVolverAtras.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Ajustes.this, MenuPrincipal.class);
+                startActivity(intent);
             }
         });
 
@@ -121,6 +135,23 @@ public class Ajustes extends AppCompatActivity implements SensorEventListener{
         buttonCompartir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String texto=getString(R.string.FechaHoraR)+"\n";
+                Cursor cursor=manejadorLogros.listar();
+                if (cursor != null && cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        cursor.getInt(0);
+                        texto+=cursor.getString(1)+"            ";
+                        texto+=cursor.getString(2)+"\n";
+                    }
+                }
+                Intent intentoEnviarEmail = new Intent(Intent.ACTION_SEND);
+                intentoEnviarEmail.putExtra(Intent.EXTRA_TEXT, getString(R.string.resultadosmios)+"\n "+texto+"\n"+getString(R.string.mogollon));
+                intentoEnviarEmail.setType("message/rfc822");
+                try {
+                    startActivity(Intent.createChooser(intentoEnviarEmail, getString(R.string.programaenvio)));
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(Ajustes.this, getString(R.string.instalaapp), Toast.LENGTH_LONG).show();
+                }
 
 
             }
@@ -135,14 +166,13 @@ public class Ajustes extends AppCompatActivity implements SensorEventListener{
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ID_CANAL);
 
         builder.setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("DATOS BORRADOS")
-                .setAutoCancel(false).setContentText("Los Datos se han borrado con exito");
+                .setContentTitle(getString(R.string.DateBorrado))
+                .setAutoCancel(false).setContentText(getString(R.string.dateBorradoExito));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String idChannel = "Canal 1";
             String nombreCanal = "Mi canal favorito";
-            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_DEFAULT);
-
+            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_HIGH);
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.GREEN);
             notificationChannel.enableVibration(true);
@@ -155,6 +185,7 @@ public class Ajustes extends AppCompatActivity implements SensorEventListener{
             //Menor que oreo
             builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
         }
+        notificationManager.notify(1, builder.build());
 
     }
     //Función que nos muestra en todo momento como está relleno nuestro listView

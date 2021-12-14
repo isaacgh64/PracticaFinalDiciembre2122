@@ -3,9 +3,12 @@ package com.example.hagotestymemuevounmontn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,10 +97,23 @@ public class Aprender extends AppCompatActivity {
             public void onClick(View view) {
                 buttonSiguiente.setEnabled(false);
                 if(posicionP<4){
+                    if(mediaPlayerCorrecto.isPlaying()){
+                        mediaPlayerCorrecto.stop();
+                        try {
+                            mediaPlayerCorrecto.prepare();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(mediaPlayerIncorrecto.isPlaying()){
+                        mediaPlayerIncorrecto.stop();
+                        try {
+                            mediaPlayerIncorrecto.prepare();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     spinner.setEnabled(true);
-
-
-
                     spinner.setBackgroundColor(Color.WHITE);
                     spinner.setAdapter(null);
                     RepetirPreguntas();
@@ -153,8 +170,18 @@ public class Aprender extends AppCompatActivity {
                 else{
                     buttonSiguiente.setEnabled(false);
                     lanzarNotificacionConFoto();
-                    String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+                    String date = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
                     manejadorLogros.insertar(date,Integer.toString(preguntasAcertadas));
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Aprender.this);
+                    builder.setTitle(getString(R.string.SeAcabo));
+                    builder.setMessage(getString(R.string.GraciasPorJugar));
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(Aprender.this,MenuPrincipal.class);
+                            startActivity(intent);
+                        }
+                    });
+                    builder.show();
 
                 }
                 spinner.setEnabled(false);
@@ -171,8 +198,8 @@ public class Aprender extends AppCompatActivity {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ID_CANAL);
 
         builder.setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentTitle("Has acerado "+preguntasAcertadas+" de 5")
-                .setContentText("Despliega para ver más");
+                .setContentTitle(getString(R.string.Hasacertado)+preguntasAcertadas+getString(R.string.de5))
+                .setContentText(getString(R.string.despliega));
 
         NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
         Bitmap bitmap;
@@ -187,13 +214,13 @@ public class Aprender extends AppCompatActivity {
         }
 
         bigPictureStyle.bigPicture(bitmap);
-        bigPictureStyle.setBigContentTitle("La nota que has sacado");
-        bigPictureStyle.setSummaryText("Enhorabuena, has acertado "+preguntasAcertadas+"/5 preguntas");
+        bigPictureStyle.setBigContentTitle(getString(R.string.lanota));
+        bigPictureStyle.setSummaryText(getString(R.string.Enhorabuena)+preguntasAcertadas+getString(R.string.preguntas));
 
         builder.setStyle(bigPictureStyle);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_HIGH);
 
             notificationChannel.enableLights(true);
             notificationChannel.setLightColor(Color.GREEN);
@@ -207,7 +234,7 @@ public class Aprender extends AppCompatActivity {
             builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
         }
 
-        notificationManager.notify(4, builder.build());
+        notificationManager.notify(1, builder.build());
     }
     //Función que nos rellena el spinner
     public void RellenarSpinner(){

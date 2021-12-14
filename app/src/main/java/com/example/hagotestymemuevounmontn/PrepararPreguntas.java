@@ -65,14 +65,20 @@ public class PrepararPreguntas extends AppCompatActivity {
         buttonInsertar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean resultado = manejadorBD.insertar(editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
-                if (resultado) {
-                    Toast.makeText(PrepararPreguntas.this, "Pregunta insertada Correctamente", Toast.LENGTH_SHORT).show();
-                    preguntas.remove(preguntas);
-                    MostrarDatos();
-                } else {
-                    Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
+                if(!editTextPregunta.getText().toString().isEmpty()&&!editTextRespuestaC.getText().toString().isEmpty()&&!editTextRespuestaI1.getText().toString().isEmpty()&&!editTextRespuestaI2.getText().toString().isEmpty()){
+                    boolean resultado = manejadorBD.insertar(editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
+                    if (resultado) {
+                        Toast.makeText(PrepararPreguntas.this, getString(R.string.InsertarPregunta), Toast.LENGTH_SHORT).show();
+                        preguntas.remove(preguntas);
+                        MostrarDatos();
+                    } else {
+                        Toast.makeText(PrepararPreguntas.this, getString(R.string.ErrorInsercion), Toast.LENGTH_SHORT).show();
+                    }
                 }
+                else{
+                    Toast.makeText(PrepararPreguntas.this, getString(R.string.DatosVacios), Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -81,7 +87,7 @@ public class PrepararPreguntas extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean borrado = manejadorBD.borrar(editTextID.getText().toString());
-                Toast.makeText(PrepararPreguntas.this, borrado ? "Borrado Correctamente" : "No se ha borrado nada", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PrepararPreguntas.this, borrado ? getString(R.string.Borrado) : getString(R.string.SinBorrar), Toast.LENGTH_SHORT).show();
                 preguntas.remove(preguntas);
                 MostrarDatos();
             }
@@ -91,14 +97,20 @@ public class PrepararPreguntas extends AppCompatActivity {
         buttonModificar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean resultado = manejadorBD.actualizar(editTextID.getText().toString().trim(),editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
-                if (resultado) {
-                    Toast.makeText(PrepararPreguntas.this, "Pregunta modificada Correctamente", Toast.LENGTH_SHORT).show();
-                    preguntas.remove(preguntas);
-                    MostrarDatos();
-                } else {
-                    Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
+                if(!editTextPregunta.getText().toString().isEmpty()&&!editTextRespuestaC.getText().toString().isEmpty()&&!editTextRespuestaI1.getText().toString().isEmpty()&&!editTextRespuestaI2.getText().toString().isEmpty()){
+                    boolean resultado = manejadorBD.actualizar(editTextID.getText().toString().trim(),editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
+                    if (resultado) {
+                        Toast.makeText(PrepararPreguntas.this, getString(R.string.Modificado), Toast.LENGTH_SHORT).show();
+                        preguntas.remove(preguntas);
+                        MostrarDatos();
+                    } else {
+                        Toast.makeText(PrepararPreguntas.this, getString(R.string.SinInsertar), Toast.LENGTH_SHORT).show();
+                    }
                 }
+                else{
+                    Toast.makeText(PrepararPreguntas.this, getString(R.string.DatosVacios), Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
 
@@ -142,7 +154,7 @@ public class PrepararPreguntas extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(PrepararPreguntas.this, "Nada que mostrar", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PrepararPreguntas.this, getString(R.string.Nadaquever), Toast.LENGTH_SHORT).show();
         }
     }
     //Clase con la que adaptaremos nuestras preguntas para que se vean mejor
