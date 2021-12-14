@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int VENGO_DE_GALERIA = 100;
     private static final int PEDI_PERMISO_ESCRITURA = 1;
     private static final int VENGO_DE_CAMARA_CON_CALIDAD = 2;
-    private static final long TIEMPO_REFRESCO = 5;
+    private static final long TIEMPO_REFRESCO = 10000;
     private static final int PERMISO_GPS = 5;
     Uri imagenUri;
 

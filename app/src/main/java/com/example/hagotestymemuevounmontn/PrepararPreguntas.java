@@ -15,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class PrepararPreguntas extends AppCompatActivity {
 
@@ -70,7 +68,7 @@ public class PrepararPreguntas extends AppCompatActivity {
                 boolean resultado = manejadorBD.insertar(editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
                 if (resultado) {
                     Toast.makeText(PrepararPreguntas.this, "Pregunta insertada Correctamente", Toast.LENGTH_SHORT).show();
-                    adaptadorParaPreguntas.clear();
+                    preguntas.remove(preguntas);
                     MostrarDatos();
                 } else {
                     Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
@@ -84,7 +82,7 @@ public class PrepararPreguntas extends AppCompatActivity {
             public void onClick(View v) {
                 boolean borrado = manejadorBD.borrar(editTextID.getText().toString());
                 Toast.makeText(PrepararPreguntas.this, borrado ? "Borrado Correctamente" : "No se ha borrado nada", Toast.LENGTH_SHORT).show();
-                adaptadorParaPreguntas.clear();
+                preguntas.remove(preguntas);
                 MostrarDatos();
             }
         });
@@ -96,7 +94,7 @@ public class PrepararPreguntas extends AppCompatActivity {
                 boolean resultado = manejadorBD.actualizar(editTextID.getText().toString().trim(),editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
                 if (resultado) {
                     Toast.makeText(PrepararPreguntas.this, "Pregunta modificada Correctamente", Toast.LENGTH_SHORT).show();
-                    adaptadorParaPreguntas.clear();
+                    preguntas.remove(preguntas);
                     MostrarDatos();
                 } else {
                     Toast.makeText(PrepararPreguntas.this, "Error en la inserción", Toast.LENGTH_SHORT).show();
@@ -171,7 +169,7 @@ public class PrepararPreguntas extends AppCompatActivity {
             LayoutInflater inflater = getLayoutInflater();
             View mifila = inflater.inflate(R.layout.adaptador, padre, false);
 
-            TextView pregunta = mifila.findViewById(R.id.textViewPregunta);
+            TextView pregunta = mifila.findViewById(R.id.textViewLogro);
             pregunta.setText(ID.get(posicion)+"."+Preguntas.get(posicion));
 
             TextView textRespuesta1 = mifila.findViewById(R.id.textViewRespuesta1);

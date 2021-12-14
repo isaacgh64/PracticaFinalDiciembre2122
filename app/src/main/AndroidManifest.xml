@@ -55,6 +55,10 @@
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_JOB_SERVICE"></service>
+        <service
+            android:name=".ServicioMp3"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity
             android:name=".MainActivity"

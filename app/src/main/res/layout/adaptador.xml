@@ -13,7 +13,7 @@
         android:layout_marginEnd="164dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPregunta" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewLogro" />
 
     <TextView
         android:id="@+id/textViewRespuesta2"
@@ -23,10 +23,10 @@
         android:layout_marginEnd="164dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPregunta" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewLogro" />
 
     <TextView
-        android:id="@+id/textViewPregunta"
+        android:id="@+id/textViewLogro"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
@@ -46,5 +46,5 @@
         android:layout_marginEnd="164dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewPregunta" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewLogro" />
 </androidx.constraintlayout.widget.ConstraintLayout>
