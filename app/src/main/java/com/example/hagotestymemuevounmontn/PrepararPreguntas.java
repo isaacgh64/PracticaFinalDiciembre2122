@@ -65,11 +65,18 @@ public class PrepararPreguntas extends AppCompatActivity {
         buttonInsertar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(!editTextPregunta.getText().toString().isEmpty()&&!editTextRespuestaC.getText().toString().isEmpty()&&!editTextRespuestaI1.getText().toString().isEmpty()&&!editTextRespuestaI2.getText().toString().isEmpty()){
                     boolean resultado = manejadorBD.insertar(editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
                     if (resultado) {
                         Toast.makeText(PrepararPreguntas.this, getString(R.string.InsertarPregunta), Toast.LENGTH_SHORT).show();
-                        preguntas.remove(preguntas);
+                        preguntas.removeAll(preguntas);
+                        ID.removeAll(ID);
+                        Preguntas.removeAll(Preguntas);
+                        RespuestaC.removeAll(RespuestaC);
+                        RespuestaI1.removeAll(RespuestaI1);
+                        RespuestaI2.removeAll(RespuestaI2);
+
                         MostrarDatos();
                     } else {
                         Toast.makeText(PrepararPreguntas.this, getString(R.string.ErrorInsercion), Toast.LENGTH_SHORT).show();
@@ -88,7 +95,12 @@ public class PrepararPreguntas extends AppCompatActivity {
             public void onClick(View v) {
                 boolean borrado = manejadorBD.borrar(editTextID.getText().toString());
                 Toast.makeText(PrepararPreguntas.this, borrado ? getString(R.string.Borrado) : getString(R.string.SinBorrar), Toast.LENGTH_SHORT).show();
-                preguntas.remove(preguntas);
+                preguntas.removeAll(preguntas);
+                ID.removeAll(ID);
+                Preguntas.removeAll(Preguntas);
+                RespuestaC.removeAll(RespuestaC);
+                RespuestaI1.removeAll(RespuestaI1);
+                RespuestaI2.removeAll(RespuestaI2);
                 MostrarDatos();
             }
         });
@@ -101,7 +113,12 @@ public class PrepararPreguntas extends AppCompatActivity {
                     boolean resultado = manejadorBD.actualizar(editTextID.getText().toString().trim(),editTextPregunta.getText().toString().trim(), editTextRespuestaC.getText().toString().trim(), editTextRespuestaI1.getText().toString().trim(),editTextRespuestaI2.getText().toString().trim());
                     if (resultado) {
                         Toast.makeText(PrepararPreguntas.this, getString(R.string.Modificado), Toast.LENGTH_SHORT).show();
-                        preguntas.remove(preguntas);
+                        preguntas.removeAll(preguntas);
+                        ID.removeAll(ID);
+                        Preguntas.removeAll(Preguntas);
+                        RespuestaC.removeAll(RespuestaC);
+                        RespuestaI1.removeAll(RespuestaI1);
+                        RespuestaI2.removeAll(RespuestaI2);
                         MostrarDatos();
                     } else {
                         Toast.makeText(PrepararPreguntas.this, getString(R.string.SinInsertar), Toast.LENGTH_SHORT).show();
