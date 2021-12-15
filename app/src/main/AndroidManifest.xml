@@ -50,6 +50,7 @@
             android:exported="true"></receiver>
 
 
+
         <service
             android:name=".MiServicioEncender"
             android:enabled="true"

@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     ManejadorBDatos manejadorBDatos = new ManejadorBDatos(this);
     ManejadorLogros manejadorLogros= new ManejadorLogros(this);
+    ManejadorBD manejadorBD= new ManejadorBD(this);
 
     private static final String ID_CANAL = "El nombre de mi canal";
     //Variables para obtener la localización
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         //Usamos el IntentFilter para que cada vez que se encienda la Pantalla me recoja los datos
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.intent.action.SCREEN_ON");
+        intentFilter.addAction("android.media.VOLUME_CHANGED_ACTION");
         getBaseContext().registerReceiver(pantallaEncendida, intentFilter);
 
 
@@ -340,6 +342,54 @@ public class MainActivity extends AppCompatActivity {
         }
         notificationManager.notify(1, builder.build());
     }
+    //Función que nos lanza la notificación del volumen
+    public void LanzarNotificacion2(){
+        //Cogemos el último logro que tenemos registrado en nuestra tabla
+        Cursor cursor = manejadorBD.listar();
+        int posicion=0;
+        if (cursor != null && cursor.getCount() > 0) {
+            while (cursor.moveToNext()) {
+                posicion++;
+            }
+
+        }
+        String idChannel = "Canal 3";
+        String nombreCanal = "Mi canal muchas líneas";
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, ID_CANAL);
+        builder.setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentTitle("Aquí van tus datos de la última vez")
+                .setContentText("Pulsa para verlos mejor");
+
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            inboxStyle.setBigContentTitle("Buenas tardes");
+            inboxStyle.addLine("El total de preguntas en la aplicación es de: "+posicion );
+            if(Sonido.ULTCORRECTA==""){
+                inboxStyle.addLine("Todavía no has jugado ");
+            }
+            else{
+                inboxStyle.addLine("La ult pregunta que fallaste fue "+Sonido.ULTINCORRECTA);
+                inboxStyle.addLine("La respuesta Correcta era "+Sonido.ULTCORRECTA);
+            }
+
+        builder.setStyle(inboxStyle);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(idChannel, nombreCanal, NotificationManager.IMPORTANCE_HIGH);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.GREEN);
+            notificationChannel.enableVibration(true);
+            notificationChannel.setShowBadge(true);
+            builder.setChannelId(idChannel);
+            notificationManager.createNotificationChannel(notificationChannel);
+
+        } else {
+            //Menor que oreo
+            builder.setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+        }
+        notificationManager.notify(3, builder.build());
+    }
+
     //Función   que nos pide el permiso para usar el GPS
     private void pedirPermisoGps(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -519,6 +569,10 @@ public class MainActivity extends AppCompatActivity {
                 manejadorBDatos.insertar(fechaYHora, String.valueOf(bateria),latitud,altitud);
                 Log.i(ETIQUETA,"Datos Guardados");
 
+            }
+            if(intent.getAction().equals("android.media.VOLUME_CHANGED_ACTION")){
+                Log.i("ESTADO_VOLUMEN","HE SUBIDO O BAJADO");
+                LanzarNotificacion2();
             }
         }
     }

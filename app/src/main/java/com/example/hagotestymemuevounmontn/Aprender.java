@@ -152,10 +152,12 @@ public class Aprender extends AppCompatActivity {
 
                 }
                 else{
+                    Sonido.ULTINCORRECTA= (String) spinner.getItemAtPosition(i);
                     for(int j=0;j<spinner.getCount();j++){
                         if(spinner.getItemAtPosition(j)==preguntas.get(numeros[posicionP]).getRespuestaC()){
                             spinner.setBackgroundColor(Color.RED);
                             spinner.getChildAt(j).setBackgroundColor(Color.GREEN);
+                            Sonido.ULTCORRECTA= (String) spinner.getItemAtPosition(j);
                             break;
                         }
                         if(Sonido.SONIDO==true){
